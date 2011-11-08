@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>iLikeColor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  
+  
+  $(document).ready(function()
+  {
+    
+    var socket = io.connect('http://ilikecolor.alexkey.c9.io');
+      socket.on('color', function (data) {
+        console.log(data.color);
+        
+        addColor(data.color);
+      });
+      
+      
+      function addColor(color) {
+          
+          var $cubes = $(".cube");
+          if($cubes.length > 50 )
+          {     
+        
+              
+                $cubes.filter(":first").remove();
+                              
+           
+                $("<div class='cube' />").css("background-color", color).appendTo("#colors").show("slide", { direction: "left"});
+              
+              
+               
+             
+             
+          } else {
+            $("<div class='cube' />").css("background-color", color).appendTo("#colors").show("slide", { direction: "left"});
+          }
+          
+          
+      }
+      
+      
+    
+    $("#color").keypress(function(e){
+          if(e.which == 13){
+                var color = $(this).val();
+                addColor(color);
+                socket.emit('color', color);
+           }
+      });
+
+
+  });
+</script>
+
+
+<style type="text/css">
+    html, body, #colors
+    {
+        padding:0;
+        margin:0;
+        height:90%;
+    }
+    .cube
+    {
+        width:50px;
+        height:50px;
+        float:left;
+        display:none;
+        z-index:50;
+        
+    }
+    
+    h1
+    {
+        background-image: linear-gradient(bottom, rgb(34,5,0) 10%, rgb(62,31,27) 55%);
+        background-image: -o-linear-gradient(bottom, rgb(34,5,0) 10%, rgb(62,31,27) 55%);
+        background-image: -moz-linear-gradient(bottom, rgb(34,5,0) 10%, rgb(62,31,27) 55%);
+        background-image: -webkit-linear-gradient(bottom, rgb(34,5,0) 10%, rgb(62,31,27) 55%);
+        background-image: -ms-linear-gradient(bottom, rgb(34,5,0) 10%, rgb(62,31,27) 55%);
+        
+        background-image: -webkit-gradient(
+            linear,
+        	left bottom,
+        	left top,
+        	color-stop(0.1, rgb(34,5,0)),
+        	color-stop(0.55, rgb(62,31,27))
+        );
+        width:95%;
+        margin:0;
+        padding:2.5%;
+        font-family:arial, sans-serf;
+        color:white;
+        display:inline-block;
+        z-index:1000;
+        
+    }
+    
+    span
+    {
+        font-size:13px;
+    }
+    
+    input
+    {
+        margin-left:10px;
+    }
+    
+</style>
+</head>
+
+<body>
+<h1>iLikeColor <span>Open Source Experiments in Color</span><input type="text" id="color" name="color" autocomplete="on"></h1>
+
+<div id="colors">
+</div>
+
+
+</body>
+
+</html> 
